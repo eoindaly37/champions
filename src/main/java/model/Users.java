@@ -10,12 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Data
 @Entity
 @Table(name = "users")
 @Getter @Setter
-class Users {
+public class Users {
 
 	private @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id") Long id;
 	
@@ -28,7 +30,8 @@ class Users {
 	@Column(name = "slack")
 	private String slack;
 
-	@OneToOne(mappedBy = "users")
+	@OneToOne(mappedBy = "lead")
+	@JsonIgnore
 	private Products product;
 	
 	Users() {}
@@ -38,4 +41,6 @@ class Users {
 		this.email = email;
 		this.slack = slack;
 	}
+	
+	
 }

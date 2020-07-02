@@ -22,7 +22,7 @@ class Domains {
 	@Column(name = "name")
 	private String name;
 
-	@OneToOne(mappedBy = "domains")
+	@OneToOne(mappedBy = "domain")
 	private Products product;
 	
 	Domains() {}
