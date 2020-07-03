@@ -10,18 +10,21 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Data
 @Entity
 @Table(name = "domains")
 @Getter @Setter
-class Domains {
+public class Domains {
 
 	private @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id")Long id;
 	
 	@Column(name = "name")
 	private String name;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "domain")
 	private Products product;
 	
