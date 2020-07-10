@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Getter @Setter
 public class Users {
 
-	private @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id") Long id;
+	private @Id @GeneratedValue(strategy = GenerationType.AUTO) Long id;
 	
 	@Column(name = "name")
 	private String name;
@@ -33,6 +33,14 @@ public class Users {
 	@OneToOne(mappedBy = "lead")
 	@JsonIgnore
 	private Products product;
+	
+	@OneToOne(mappedBy = "userid")
+	@JsonIgnore
+	private PairWith pairwith;
+	
+	@OneToOne(mappedBy = "userid")
+	@JsonIgnore
+	private LookForHelp lookforhelp;
 	
 	Users() {}
 

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Data
 @Entity
@@ -31,7 +33,19 @@ public class Products {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "domainid", referencedColumnName = "id")
 	private Domains domain;
-
+	
+	@OneToOne(mappedBy = "productid")
+	@JsonIgnore
+	private Subcomponents subcomponent;
+	
+	@OneToOne(mappedBy = "productid")
+	@JsonIgnore
+	private PairWith pairwith;
+	
+	@OneToOne(mappedBy = "productid")
+	@JsonIgnore
+	private LookForHelp lookforhelp;
+	
 	Products() {}
 
 	Products(String name, Users lead, Domains domain) {
