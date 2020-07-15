@@ -10,35 +10,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import model.Users;
+import dto.UsersDTO;
+import converter.UserConverter;
 
 @RestController
 class UsersController {
 
 	private final UsersRepository repository;
+	private UserConverter converter;
 
-	UsersController(UsersRepository repository) {
+	UsersController(UsersRepository repository, UserConverter converter) {
 		this.repository = repository;
+		this.converter = converter;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/users")
-	List<Users> all() {
-		return repository.findAll();
+	List<UsersDTO> all() {
+		List<Users> findAll = repository.findAll();
+		return converter.entityToDTO(findAll);
 	}
 
 	@PostMapping("/users")
-	Users newEmployee(@RequestBody Users newEmployee) {
-		return repository.save(newEmployee);
+	UsersDTO newEmployee(@RequestBody UsersDTO dto) {
+		Users user = converter.dtoToEntity(dto);
+		user = repository.save(user);
+		return converter.entityToDTO(user);
 	}
 
 	// Single item
 	
 	@GetMapping("/users/{id}")
-	Users one(@PathVariable Long id) {
+	UsersDTO one(@PathVariable Long id) {
 		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+		Users orElse = repository.findById(id).orElse(null);
+		return converter.entityToDTO(orElse);
 	}
 
 	@PutMapping("/users/{id}")

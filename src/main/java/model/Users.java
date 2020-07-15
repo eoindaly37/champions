@@ -31,15 +31,12 @@ public class Users {
 	private String slack;
 
 	@OneToOne(mappedBy = "lead")
-	@JsonIgnore
 	private Products product;
 	
 	@OneToOne(mappedBy = "userid")
-	@JsonIgnore
 	private PairWith pairwith;
 	
 	@OneToOne(mappedBy = "userid")
-	@JsonIgnore
 	private LookForHelp lookforhelp;
 	
 	Users() {}
