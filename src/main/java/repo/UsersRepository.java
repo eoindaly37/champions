@@ -1,8 +1,8 @@
-package controller;
+package repo;
 
 import model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-interface UsersRepository extends JpaRepository<Users, Long> {
+public interface UsersRepository extends JpaRepository<Users, Long> {
 
 }

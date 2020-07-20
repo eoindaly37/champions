@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import model.Users;
+import repo.UsersRepository;
 import dto.UsersDTO;
 import converter.UserConverter;
 
