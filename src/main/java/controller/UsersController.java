@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Users;
-import repo.UsersRepository;
 import service.UserService;
 import dto.UsersDTO;
-import converter.UserConverter;
 
 @RestController
 class UsersController {

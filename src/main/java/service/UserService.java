@@ -43,17 +43,17 @@ public class UserService {
 	
 	//replace user
 	public UsersDTO replaceUser(UsersDTO dto, Long id) {
-		Users user = converter.dtoToEntity(dto);
+		Users newuser = converter.dtoToEntity(dto);
 		return repository.findById(id)
-				.map(employee -> {
-					employee.setName(user.getName());
-					employee.setEmail(user.getEmail());
-					employee.setSlack(user.getSlack());
-					return converter.entityToDTO(repository.save(employee));
+				.map(user -> {
+					user.setName(newuser.getName());
+					user.setEmail(newuser.getEmail());
+					user.setSlack(newuser.getSlack());
+					return converter.entityToDTO(repository.save(user));
 				})
 				.orElseGet(() -> {
-					user.setId(id);
-					return converter.entityToDTO(repository.save(user));
+					newuser.setId(id);
+					return converter.entityToDTO(repository.save(newuser));
 				});
 	}
 	
