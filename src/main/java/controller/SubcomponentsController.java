@@ -9,63 +9,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Subcomponents;
-import repo.SubcomponentsRepository;
+import service.SubcomponentService;
+import dto.SubcomponentsDTO;
 
 @RestController
 class SubcomponentsController {
 
-	private final SubcomponentsRepository repository;
+	private SubcomponentService service;
 
-	SubcomponentsController(SubcomponentsRepository repository) {
-		this.repository = repository;
+	SubcomponentsController(SubcomponentService service) {
+		this.service = service;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/subcomponents")
-	List<Subcomponents> all() {
-		return repository.findAll();
+	List<SubcomponentsDTO> all() {
+		List<SubcomponentsDTO> dtos = service.all();
+		return dtos;
 	}
 
 	@PostMapping("/subcomponents")
-	Subcomponents newEmployee(@RequestBody Subcomponents newEmployee) {
-		return repository.save(newEmployee);
+	SubcomponentsDTO newEmployee(@RequestBody SubcomponentsDTO dto) {
+		SubcomponentsDTO saved = service.newSubcomponent(dto);
+		return saved;
 	}
 
 	// Single item
 	
 	@GetMapping("/subcomponents/{id}")
-	Subcomponents one(@PathVariable Long id) {
-		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+	SubcomponentsDTO one(@PathVariable Long id) {
+		SubcomponentsDTO dto = service.single(id);
+		return dto;
 	}
 
 	@PutMapping("/subcomponents/{id}")
-	Subcomponents replaceEmployee(@RequestBody Subcomponents newEmployee, @PathVariable Long id) {
-		
-		return repository.findById(id)
-			.map(employee -> {
-				employee.setProductid(newEmployee.getProductid());
-				employee.setName(newEmployee.getName());
-				employee.setNotes(newEmployee.getNotes());
-				employee.setCode(newEmployee.getCode());
-				employee.setJira(newEmployee.getJira());
-				employee.setPlaybook(newEmployee.getPlaybook());
-				employee.setToi(newEmployee.getToi());
-				employee.setSlacksupport(newEmployee.getSlacksupport());
-				employee.setSlackengineer(newEmployee.getSlackengineer());
-				return repository.save(employee);
-			})
-			.orElseGet(() -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	SubcomponentsDTO replaceEmployee(@RequestBody SubcomponentsDTO dto, @PathVariable Long id) {
+		SubcomponentsDTO replaced = service.replaceSubcomponent(dto, id);
+		return replaced;
 	}
 
 	@DeleteMapping("/subcomponents/{id}")
 	void deleteEmployee(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.deleteSubcomponent(id);
 	}
 }

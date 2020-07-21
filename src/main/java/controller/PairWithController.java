@@ -9,56 +9,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.PairWith;
-import repo.PairWithRepository;
+import service.PairWithService;
+import dto.PairWithDTO;
 
 @RestController
 class PairWithController {
 
-	private final PairWithRepository repository;
+	private PairWithService service;
 
-	PairWithController(PairWithRepository repository) {
-		this.repository = repository;
+	PairWithController(PairWithService service) {
+		this.service = service;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/pairwith")
-	List<PairWith> all() {
-		return repository.findAll();
+	List<PairWithDTO> all() {
+		List<PairWithDTO> dtos = service.all();
+		return dtos;
 	}
 
 	@PostMapping("/pairwith")
-	PairWith newEmployee(@RequestBody PairWith newEmployee) {
-		return repository.save(newEmployee);
+	PairWithDTO newEmployee(@RequestBody PairWithDTO dto) {
+		PairWithDTO saved = service.newPairWith(dto);
+		return saved;
 	}
 
 	// Single item
 	
 	@GetMapping("/pairwith/{id}")
-	PairWith one(@PathVariable Long id) {
-		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+	PairWithDTO one(@PathVariable Long id) {
+		PairWithDTO dto = service.single(id);
+		return dto;
 	}
 
 	@PutMapping("/pairwith/{id}")
-	PairWith replaceEmployee(@RequestBody PairWith newEmployee, @PathVariable Long id) {
-		
-		return repository.findById(id)
-			.map(employee -> {
-				employee.setProductid(newEmployee.getProductid());
-				employee.setUserid(newEmployee.getUserid());
-				return repository.save(employee);
-			})
-			.orElseGet(() -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	PairWithDTO replaceEmployee(@RequestBody PairWithDTO dto, @PathVariable Long id) {
+		PairWithDTO replaced = service.replacePairWith(dto, id);
+		return replaced;
 	}
 
 	@DeleteMapping("/pairwith/{id}")
 	void deleteEmployee(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.deletePairWith(id);
 	}
 }
