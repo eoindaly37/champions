@@ -35,15 +35,12 @@ public class Products {
 	private Domains domain;
 	
 	@OneToOne(mappedBy = "productid")
-	@JsonIgnore
 	private Subcomponents subcomponent;
 	
 	@OneToOne(mappedBy = "productid")
-	@JsonIgnore
 	private PairWith pairwith;
 	
 	@OneToOne(mappedBy = "productid")
-	@JsonIgnore
 	private LookForHelp lookforhelp;
 	
 	Products() {}

@@ -9,57 +9,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Products;
-import repo.ProductsRepository;
+import service.ProductService;
+import dto.ProductsDTO;
 
 @RestController
 class ProductsController {
 
-	private final ProductsRepository repository;
+	private ProductService service;
 
-	ProductsController(ProductsRepository repository) {
-		this.repository = repository;
+	ProductsController(ProductService service) {
+		this.service = service;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/products")
-	List<Products> all() {
-		return repository.findAll();
+	List<ProductsDTO> all() {
+		List<ProductsDTO> dtos = service.all();
+		return dtos;
 	}
 
 	@PostMapping("/products")
-	Products newEmployee(@RequestBody Products newEmployee) {
-		return repository.save(newEmployee);
+	ProductsDTO newEmployee(@RequestBody ProductsDTO dto) {
+		ProductsDTO saved = service.newProduct(dto);
+		return saved;
 	}
 
 	// Single item
 	
 	@GetMapping("/products/{id}")
-	Products one(@PathVariable Long id) {
-		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+	ProductsDTO one(@PathVariable Long id) {
+		ProductsDTO dto = service.single(id);
+		return dto;
 	}
 
 	@PutMapping("/products/{id}")
-	Products replaceEmployee(@RequestBody Products newEmployee, @PathVariable Long id) {
-		
-		return repository.findById(id)
-			.map(employee -> {
-				employee.setName(newEmployee.getName());
-				employee.setLead(newEmployee.getLead());
-				employee.setDomain(newEmployee.getDomain());
-				return repository.save(employee);
-			})
-			.orElseGet(() -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	ProductsDTO replaceEmployee(@RequestBody ProductsDTO dto, @PathVariable Long id) {
+		ProductsDTO replaced = service.replaceProduct(dto, id);
+		return replaced;
 	}
 
 	@DeleteMapping("/products/{id}")
 	void deleteEmployee(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.deleteProduct(id);
 	}
 }
