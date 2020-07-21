@@ -9,56 +9,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.LookForHelp;
-import repo.LookForHelpRepository;
+import service.LookForHelpService;
+import dto.LookForHelpDTO;
 
 @RestController
 class LookForHelpController {
 
-	private final LookForHelpRepository repository;
+	private LookForHelpService service;
 
-	LookForHelpController(LookForHelpRepository repository) {
-		this.repository = repository;
+	LookForHelpController(LookForHelpService service) {
+		this.service = service;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/lookforhelp")
-	List<LookForHelp> all() {
-		return repository.findAll();
+	List<LookForHelpDTO> all() {
+		List<LookForHelpDTO> dtos = service.all();
+		return dtos;
 	}
 
 	@PostMapping("/lookforhelp")
-	LookForHelp newEmployee(@RequestBody LookForHelp newEmployee) {
-		return repository.save(newEmployee);
+	LookForHelpDTO newEmployee(@RequestBody LookForHelpDTO dto) {
+		LookForHelpDTO saved = service.newLookForHelp(dto);
+		return saved;
 	}
 
 	// Single item
 	
 	@GetMapping("/lookforhelp/{id}")
-	LookForHelp one(@PathVariable Long id) {
-		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+	LookForHelpDTO one(@PathVariable Long id) {
+		LookForHelpDTO dto = service.single(id);
+		return dto;
 	}
 
 	@PutMapping("/lookforhelp/{id}")
-	LookForHelp replaceEmployee(@RequestBody LookForHelp newEmployee, @PathVariable Long id) {
-		
-		return repository.findById(id)
-			.map(employee -> {
-				employee.setProductid(newEmployee.getProductid());
-				employee.setUserid(newEmployee.getUserid());
-				return repository.save(employee);
-			})
-			.orElseGet(() -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	LookForHelpDTO replaceEmployee(@RequestBody LookForHelpDTO dto, @PathVariable Long id) {
+		LookForHelpDTO replaced = service.replaceLookForHelp(dto, id);
+		return replaced;
 	}
 
 	@DeleteMapping("/lookforhelp/{id}")
 	void deleteEmployee(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.deleteLookForHelp(id);
 	}
 }
