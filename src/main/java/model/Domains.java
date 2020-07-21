@@ -24,7 +24,6 @@ public class Domains {
 	@Column(name = "name")
 	private String name;
 
-	@JsonIgnore
 	@OneToOne(mappedBy = "domain")
 	private Products product;
 	

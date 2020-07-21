@@ -9,55 +9,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Domains;
-import repo.DomainsRepository;
+import service.DomainService;
+import dto.DomainsDTO;
 
 @RestController
 class DomainsController {
 
-	private final DomainsRepository repository;
+	private DomainService service;
 
-	DomainsController(DomainsRepository repository) {
-		this.repository = repository;
+	DomainsController(DomainService service) {
+		this.service = service;
 	}
 
 	// Aggregate root
 
 	@GetMapping("/domains")
-	List<Domains> all() {
-		return repository.findAll();
+	List<DomainsDTO> all() {
+		List<DomainsDTO> dtos = service.all();
+		return dtos;
 	}
 
 	@PostMapping("/domains")
-	Domains newEmployee(@RequestBody Domains newEmployee) {
-		return repository.save(newEmployee);
+	DomainsDTO newEmployee(@RequestBody DomainsDTO dto) {
+		DomainsDTO saved = service.newDomain(dto);
+		return saved;
 	}
 
 	// Single item
 	
 	@GetMapping("/domains/{id}")
-	Domains one(@PathVariable Long id) {
-		
-		return repository.findById(id)
-			.orElseThrow(() -> new UserNotFoundException(id));
+	DomainsDTO one(@PathVariable Long id) {
+		DomainsDTO dto = service.single(id);
+		return dto;
 	}
 
 	@PutMapping("/domains/{id}")
-	Domains replaceEmployee(@RequestBody Domains newEmployee, @PathVariable Long id) {
-		
-		return repository.findById(id)
-			.map(employee -> {
-				employee.setName(newEmployee.getName());
-				return repository.save(employee);
-			})
-			.orElseGet(() -> {
-				newEmployee.setId(id);
-				return repository.save(newEmployee);
-			});
+	DomainsDTO replaceEmployee(@RequestBody DomainsDTO dto, @PathVariable Long id) {
+		DomainsDTO replaced = service.replaceDomain(dto, id);
+		return replaced;
 	}
 
 	@DeleteMapping("/domains/{id}")
 	void deleteEmployee(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.deleteDomain(id);
 	}
 }
